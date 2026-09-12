@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+	  <TargetFramework>net9.0-windows10.0.19041.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>0.9.0</Version>
+    <AssemblyName>BatteryCheck</AssemblyName>
+    <Product>BatteryCheck</Product>
+    <ApplicationIcon>BatteryCheck.ico</ApplicationIcon>
+    <Description>A lightweight Windows Bluetooth battery monitor.</Description>
+  </PropertyGroup>
+
+
+</Project>
