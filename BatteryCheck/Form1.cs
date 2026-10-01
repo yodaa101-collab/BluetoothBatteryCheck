@@ -12,6 +12,10 @@ public partial class Form1 : Form
 	private readonly BluetoothPairingService _pairingService = new();
 	private readonly System.Windows.Forms.Timer _refreshTimer = new();
 
+	private readonly NotifyIcon _lowBatteryNotifier = new();
+
+	private readonly HashSet<ulong> _lowBatteryNotifiedDevices = new();
+
 	private AppSettings _settings;
 	private bool _isRefreshing;
 
@@ -39,6 +43,16 @@ public partial class Form1 : Form
 
 		_settings = AppSettingsStore.Load();
 		_settings.StartWithWindows = StartupManager.IsEnabled();
+
+		_lowBatteryNotifier.Icon = Icon;
+		_lowBatteryNotifier.Visible = false;
+		_lowBatteryNotifier.BalloonTipTitle = "BatteryCheck";
+
+		_lowBatteryNotifier.BalloonTipClosed +=
+	(_, _) => _lowBatteryNotifier.Visible = false;
+
+		_lowBatteryNotifier.BalloonTipClicked +=
+			(_, _) => _lowBatteryNotifier.Visible = false;
 
 		ConfigureGrid();
 		ApplySettings();
@@ -145,6 +159,8 @@ public partial class Form1 : Form
 			var devices =
 				await _scanner.GetDevicesAsync();
 
+			CheckLowBatteryNotifications(devices);
+
 			foreach (var device in devices)
 			{
 				gridDevices.Rows.Add(
@@ -198,6 +214,52 @@ public partial class Form1 : Form
 
 			btnRemoveDevice.Enabled =
 				gridDevices.SelectedRows.Count > 0;
+		}
+	}
+
+	private void CheckLowBatteryNotifications(
+		IEnumerable<BatteryCheck.Models.DeviceInfo> devices)
+	{
+		if (!_settings.LowBatteryNotificationsEnabled)
+		{
+			_lowBatteryNotifiedDevices.Clear();
+			return;
+		}
+
+		int threshold =
+			Math.Clamp(
+				_settings.LowBatteryThresholdPercent,
+				5,
+				50);
+
+		foreach (var device in devices)
+		{
+			if (device.Battery < 0)
+				continue;
+
+			if (device.Battery <= threshold)
+			{
+				if (_lowBatteryNotifiedDevices.Add(
+					device.Address))
+				{
+					_lowBatteryNotifier.BalloonTipText =
+						$"{device.Name} battery is at " +
+						$"{device.Battery}%.";
+
+					_lowBatteryNotifier.BalloonTipIcon =
+						ToolTipIcon.Warning;
+
+					_lowBatteryNotifier.Visible = true;
+
+					_lowBatteryNotifier.ShowBalloonTip(
+						5000);
+				}
+			}
+			else
+			{
+				_lowBatteryNotifiedDevices.Remove(
+					device.Address);
+			}
 		}
 	}
 
@@ -470,15 +532,19 @@ public partial class Form1 : Form
 	}
 
 	private void mnuHelpAbout_Click(
-		object sender,
-		EventArgs e)
+	object sender,
+	EventArgs e)
 	{
+		string version =
+			Application.ProductVersion;
+
 		MessageBox.Show(
 			this,
-			"BatteryCheck\n\n" +
+			$"BatteryCheck v{version}\n\n" +
 			"A lightweight Windows Bluetooth battery monitor.\n\n" +
 			"Battery percentages are shown when a device " +
-			"exposes a standard battery service to Windows.",
+			"exposes a standard battery service to Windows.\n\n" +
+			"Created by VA with OpenAI assistance",
 			"About BatteryCheck",
 			MessageBoxButtons.OK,
 			MessageBoxIcon.Information);
@@ -508,5 +574,27 @@ public partial class Form1 : Form
 		}
 
 		AppSettingsStore.Save(_settings);
+
+		_lowBatteryNotifier.Visible = false;
+		_lowBatteryNotifier.Dispose();
+	    }
+
+		private void mnuFileSendFile_Click(
+	object sender,
+	EventArgs e)
+	{
+		var fileTransferService =
+			new BatteryCheck.Services.BluetoothFileTransferService();
+
+		fileTransferService.OpenBluetoothFileTransfer();
+	}
+	private void btnSendFile_Click(
+		object sender,
+		EventArgs e)
+	{
+		var fileTransferService =
+			new BatteryCheck.Services.BluetoothFileTransferService();
+
+		fileTransferService.OpenBluetoothFileTransfer();
 	}
 }

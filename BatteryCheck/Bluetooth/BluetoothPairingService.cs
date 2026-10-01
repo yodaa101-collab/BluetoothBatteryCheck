@@ -125,8 +125,50 @@ internal sealed class BluetoothPairingService
 			if (!device.Pairing.CanPair)
 				return null;
 
-			return await device.Pairing.PairAsync(
-				DevicePairingProtectionLevel.Default);
+			var customPairing = device.Pairing.Custom;
+
+			void PairingRequested(
+				DeviceInformationCustomPairing sender,
+				DevicePairingRequestedEventArgs args)
+			{
+				switch (args.PairingKind)
+				{
+					case DevicePairingKinds.ConfirmOnly:
+						args.Accept();
+						break;
+
+					case DevicePairingKinds.DisplayPin:
+						args.Accept();
+						break;
+
+					case DevicePairingKinds.ConfirmPinMatch:
+						args.Accept();
+						break;
+
+					case DevicePairingKinds.ProvidePin:
+						// A PIN-entry UI is not currently implemented.
+						break;
+				}
+			}
+
+			customPairing.PairingRequested += PairingRequested;
+
+			try
+			{
+				const DevicePairingKinds pairingKinds =
+					DevicePairingKinds.ConfirmOnly |
+					DevicePairingKinds.DisplayPin |
+					DevicePairingKinds.ConfirmPinMatch |
+					DevicePairingKinds.ProvidePin;
+
+				return await customPairing.PairAsync(
+					pairingKinds,
+					DevicePairingProtectionLevel.Default);
+			}
+			finally
+			{
+				customPairing.PairingRequested -= PairingRequested;
+			}
 		}
 		catch
 		{
@@ -143,7 +185,8 @@ internal sealed class BluetoothPairingService
 
 			var result = await device.Pairing.UnpairAsync();
 
-			return result.Status == DeviceUnpairingResultStatus.Unpaired;
+			return result.Status ==
+				DeviceUnpairingResultStatus.Unpaired;
 		}
 		catch
 		{

@@ -9,6 +9,7 @@ partial class Form1
 	private MenuStrip menuStrip;
 	private ToolStripMenuItem mnuFile;
 	private ToolStripMenuItem mnuFileRefresh;
+	private ToolStripMenuItem mnuFileSendFile;
 	private ToolStripMenuItem mnuFileExit;
 	private ToolStripMenuItem mnuSettings;
 	private ToolStripMenuItem mnuSettingsPreferences;
@@ -21,7 +22,7 @@ partial class Form1
 
 	private Button btnAddDevice;
 	private Button btnRemoveDevice;
-	private Button btnRefresh;
+	private Button btnSendFile;
 
 	private DataGridView gridDevices;
 	private DataGridViewTextBoxColumn colDevice;
@@ -32,6 +33,7 @@ partial class Form1
 	private Panel footerPanel;
 	private Label lblLastUpdated;
 	private Label lblAttribution;
+	private Button btnRefresh;
 	private Button btnExit;
 
 	protected override void Dispose(bool disposing)
@@ -52,6 +54,7 @@ partial class Form1
 		menuStrip = new MenuStrip();
 		mnuFile = new ToolStripMenuItem();
 		mnuFileRefresh = new ToolStripMenuItem();
+		mnuFileSendFile = new ToolStripMenuItem();
 		mnuFileExit = new ToolStripMenuItem();
 
 		mnuSettings = new ToolStripMenuItem();
@@ -66,7 +69,7 @@ partial class Form1
 
 		btnAddDevice = new Button();
 		btnRemoveDevice = new Button();
-		btnRefresh = new Button();
+		btnSendFile = new Button();
 
 		gridDevices = new DataGridView();
 		colDevice = new DataGridViewTextBoxColumn();
@@ -77,6 +80,7 @@ partial class Form1
 		footerPanel = new Panel();
 		lblLastUpdated = new Label();
 		lblAttribution = new Label();
+		btnRefresh = new Button();
 		btnExit = new Button();
 
 		menuStrip.SuspendLayout();
@@ -104,6 +108,8 @@ partial class Form1
 			{
 				mnuFileRefresh,
 				new ToolStripSeparator(),
+				mnuFileSendFile,
+				new ToolStripSeparator(),
 				mnuFileExit
 			});
 
@@ -112,6 +118,9 @@ partial class Form1
 		mnuFileRefresh.Text = "Refresh";
 		mnuFileRefresh.ShortcutKeys = Keys.F5;
 		mnuFileRefresh.Click += mnuFileRefresh_Click;
+
+		mnuFileSendFile.Text = "Send File…";
+		mnuFileSendFile.Click += mnuFileSendFile_Click;
 
 		mnuFileExit.Text = "Exit";
 		mnuFileExit.Click += mnuFileExit_Click;
@@ -145,7 +154,7 @@ partial class Form1
 		headerPanel.Controls.Add(lblDeviceCount);
 		headerPanel.Controls.Add(btnAddDevice);
 		headerPanel.Controls.Add(btnRemoveDevice);
-		headerPanel.Controls.Add(btnRefresh);
+		headerPanel.Controls.Add(btnSendFile);
 
 		headerPanel.Dock = DockStyle.Top;
 		headerPanel.Location = new Point(0, 24);
@@ -155,7 +164,11 @@ partial class Form1
 
 		// lblTitle
 		lblTitle.AutoSize = true;
-		lblTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+		lblTitle.Font = new Font(
+			"Segoe UI",
+			12F,
+			FontStyle.Bold);
+
 		lblTitle.Location = new Point(12, 9);
 		lblTitle.Text = "BatteryCheck";
 
@@ -166,17 +179,20 @@ partial class Form1
 		lblDeviceCount.Text = "Scanning Bluetooth devices…";
 
 		// btnAddDevice
-		btnAddDevice.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-		btnAddDevice.AutoSize = true;
+		btnAddDevice.Anchor =
+			AnchorStyles.Top | AnchorStyles.Right;
+
 		btnAddDevice.Location = new Point(306, 21);
 		btnAddDevice.Name = "btnAddDevice";
 		btnAddDevice.Size = new Size(104, 30);
-		btnAddDevice.Text = "+ Add Device";
+		btnAddDevice.Text = "+ Nearby devices";
 		btnAddDevice.UseVisualStyleBackColor = true;
 		btnAddDevice.Click += btnAddDevice_Click;
 
 		// btnRemoveDevice
-		btnRemoveDevice.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+		btnRemoveDevice.Anchor =
+			AnchorStyles.Top | AnchorStyles.Right;
+
 		btnRemoveDevice.Location = new Point(416, 21);
 		btnRemoveDevice.Name = "btnRemoveDevice";
 		btnRemoveDevice.Size = new Size(104, 30);
@@ -185,14 +201,16 @@ partial class Form1
 		btnRemoveDevice.Enabled = false;
 		btnRemoveDevice.Click += btnRemoveDevice_Click;
 
-		// btnRefresh
-		btnRefresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-		btnRefresh.Location = new Point(526, 21);
-		btnRefresh.Name = "btnRefresh";
-		btnRefresh.Size = new Size(102, 30);
-		btnRefresh.Text = "Refresh";
-		btnRefresh.UseVisualStyleBackColor = true;
-		btnRefresh.Click += btnRefresh_Click;
+		// btnSendFile
+		btnSendFile.Anchor =
+			AnchorStyles.Top | AnchorStyles.Right;
+
+		btnSendFile.Location = new Point(526, 21);
+		btnSendFile.Name = "btnSendFile";
+		btnSendFile.Size = new Size(102, 30);
+		btnSendFile.Text = "Send File";
+		btnSendFile.UseVisualStyleBackColor = true;
+		btnSendFile.Click += btnSendFile_Click;
 
 		// gridDevices
 		gridDevices.AllowUserToAddRows = false;
@@ -200,6 +218,7 @@ partial class Form1
 		gridDevices.AllowUserToResizeRows = false;
 		gridDevices.BackgroundColor = SystemColors.Window;
 		gridDevices.BorderStyle = BorderStyle.None;
+
 		gridDevices.ColumnHeadersHeightSizeMode =
 			DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 
@@ -217,12 +236,13 @@ partial class Form1
 		gridDevices.MultiSelect = false;
 		gridDevices.Name = "gridDevices";
 		gridDevices.ReadOnly = true;
+
 		gridDevices.SelectionMode =
 			DataGridViewSelectionMode.FullRowSelect;
 
 		gridDevices.Size = new Size(640, 218);
-
-		gridDevices.SelectionChanged += gridDevices_SelectionChanged;
+		gridDevices.SelectionChanged +=
+			gridDevices_SelectionChanged;
 
 		// columns
 		colDevice.HeaderText = "Device";
@@ -243,6 +263,7 @@ partial class Form1
 		// footerPanel
 		footerPanel.Controls.Add(lblLastUpdated);
 		footerPanel.Controls.Add(lblAttribution);
+		footerPanel.Controls.Add(btnRefresh);
 		footerPanel.Controls.Add(btnExit);
 
 		footerPanel.Dock = DockStyle.Bottom;
@@ -252,12 +273,14 @@ partial class Form1
 
 		// lblLastUpdated
 		lblLastUpdated.Anchor =
-			AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+			AnchorStyles.Top |
+			AnchorStyles.Left |
+			AnchorStyles.Right;
 
 		lblLastUpdated.ForeColor = SystemColors.GrayText;
 		lblLastUpdated.Location = new Point(12, 5);
 		lblLastUpdated.Name = "lblLastUpdated";
-		lblLastUpdated.Size = new Size(500, 20);
+		lblLastUpdated.Size = new Size(390, 20);
 		lblLastUpdated.Text = "Not updated yet";
 
 		// lblAttribution
@@ -266,6 +289,7 @@ partial class Form1
 
 		lblAttribution.AutoSize = true;
 		lblAttribution.ForeColor = SystemColors.GrayText;
+
 		lblAttribution.Font = new Font(
 			"Segoe UI",
 			8F,
@@ -273,8 +297,20 @@ partial class Form1
 
 		lblAttribution.Location = new Point(12, 41);
 		lblAttribution.Name = "lblAttribution";
+
 		lblAttribution.Text =
 			"Created by VA with OpenAI assistance";
+
+		// btnRefresh
+		btnRefresh.Anchor =
+			AnchorStyles.Bottom | AnchorStyles.Right;
+
+		btnRefresh.Location = new Point(422, 30);
+		btnRefresh.Name = "btnRefresh";
+		btnRefresh.Size = new Size(102, 30);
+		btnRefresh.Text = "Refresh";
+		btnRefresh.UseVisualStyleBackColor = true;
+		btnRefresh.Click += btnRefresh_Click;
 
 		// btnExit
 		btnExit.Anchor =
@@ -285,8 +321,6 @@ partial class Form1
 		btnExit.Size = new Size(98, 30);
 		btnExit.Text = "Exit";
 		btnExit.UseVisualStyleBackColor = true;
-
-		// Reuse the existing File > Exit handler
 		btnExit.Click += mnuFileExit_Click;
 
 		// Form1
@@ -320,7 +354,8 @@ partial class Form1
 		footerPanel.ResumeLayout(false);
 		footerPanel.PerformLayout();
 
-		((System.ComponentModel.ISupportInitialize)gridDevices).EndInit();
+		((System.ComponentModel.ISupportInitialize)gridDevices)
+			.EndInit();
 
 		ResumeLayout(false);
 		PerformLayout();

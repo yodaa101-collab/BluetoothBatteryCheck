@@ -14,6 +14,12 @@ partial class Preferences
 	private Label lblRefreshInterval;
 	private NumericUpDown nudRefreshInterval;
 
+	private GroupBox grpNotifications;
+	private CheckBox chkLowBatteryNotifications;
+	private Label lblLowBatteryThreshold;
+	private NumericUpDown nudLowBatteryThreshold;
+	private Label lblPercent;
+
 	private Button btnCreateDesktopShortcut;
 	private Button btnOK;
 	private Button btnCancel;
@@ -38,12 +44,24 @@ partial class Preferences
 		lblRefreshInterval = new Label();
 		nudRefreshInterval = new NumericUpDown();
 
+		grpNotifications = new GroupBox();
+		chkLowBatteryNotifications = new CheckBox();
+		lblLowBatteryThreshold = new Label();
+		nudLowBatteryThreshold = new NumericUpDown();
+		lblPercent = new Label();
+
 		btnCreateDesktopShortcut = new Button();
 		btnOK = new Button();
 		btnCancel = new Button();
 
 		grpGeneral.SuspendLayout();
-		((System.ComponentModel.ISupportInitialize)nudRefreshInterval).BeginInit();
+		grpNotifications.SuspendLayout();
+
+		((System.ComponentModel.ISupportInitialize)
+			nudRefreshInterval).BeginInit();
+
+		((System.ComponentModel.ISupportInitialize)
+			nudLowBatteryThreshold).BeginInit();
 
 		SuspendLayout();
 
@@ -115,9 +133,76 @@ partial class Preferences
 
 		grpGeneral.Controls.Add(secondsLabel);
 
+		// grpNotifications
+		grpNotifications.Anchor =
+			AnchorStyles.Top |
+			AnchorStyles.Left |
+			AnchorStyles.Right;
+
+		grpNotifications.Controls.Add(
+			chkLowBatteryNotifications);
+
+		grpNotifications.Controls.Add(
+			lblLowBatteryThreshold);
+
+		grpNotifications.Controls.Add(
+			nudLowBatteryThreshold);
+
+		grpNotifications.Controls.Add(
+			lblPercent);
+
+		grpNotifications.Location =
+			new Point(12, 205);
+
+		grpNotifications.Name =
+			"grpNotifications";
+
+		grpNotifications.Size =
+			new Size(406, 105);
+
+		grpNotifications.TabStop = false;
+
+		grpNotifications.Text =
+			"Notifications";
+
+		// chkLowBatteryNotifications
+		chkLowBatteryNotifications.AutoSize = true;
+
+		chkLowBatteryNotifications.Location =
+			new Point(18, 28);
+
+		chkLowBatteryNotifications.Text =
+			"Notify me when a device battery is low";
+
+		// lblLowBatteryThreshold
+		lblLowBatteryThreshold.AutoSize = true;
+
+		lblLowBatteryThreshold.Location =
+			new Point(18, 65);
+
+		lblLowBatteryThreshold.Text =
+			"Low battery threshold:";
+
+		// nudLowBatteryThreshold
+		nudLowBatteryThreshold.Location =
+			new Point(157, 61);
+
+		nudLowBatteryThreshold.Minimum = 5;
+		nudLowBatteryThreshold.Maximum = 50;
+		nudLowBatteryThreshold.Value = 20;
+		nudLowBatteryThreshold.Width = 60;
+
+		// lblPercent
+		lblPercent.AutoSize = true;
+
+		lblPercent.Location =
+			new Point(223, 65);
+
+		lblPercent.Text = "%";
+
 		// btnCreateDesktopShortcut
 		btnCreateDesktopShortcut.Location =
-			new Point(12, 211);
+			new Point(12, 328);
 
 		btnCreateDesktopShortcut.Name =
 			"btnCreateDesktopShortcut";
@@ -143,7 +228,7 @@ partial class Preferences
 			DialogResult.OK;
 
 		btnOK.Location =
-			new Point(262, 213);
+			new Point(262, 330);
 
 		btnOK.Size =
 			new Size(75, 27);
@@ -162,7 +247,7 @@ partial class Preferences
 			DialogResult.Cancel;
 
 		btnCancel.Location =
-			new Point(343, 213);
+			new Point(343, 330);
 
 		btnCancel.Size =
 			new Size(75, 27);
@@ -184,9 +269,10 @@ partial class Preferences
 			AutoScaleMode.Font;
 
 		ClientSize =
-			new Size(430, 255);
+			new Size(430, 372);
 
 		Controls.Add(grpGeneral);
+		Controls.Add(grpNotifications);
 		Controls.Add(btnCreateDesktopShortcut);
 		Controls.Add(btnOK);
 		Controls.Add(btnCancel);
@@ -212,8 +298,14 @@ partial class Preferences
 		grpGeneral.ResumeLayout(false);
 		grpGeneral.PerformLayout();
 
+		grpNotifications.ResumeLayout(false);
+		grpNotifications.PerformLayout();
+
 		((System.ComponentModel.ISupportInitialize)
 			nudRefreshInterval).EndInit();
+
+		((System.ComponentModel.ISupportInitialize)
+			nudLowBatteryThreshold).EndInit();
 
 		ResumeLayout(false);
 	}

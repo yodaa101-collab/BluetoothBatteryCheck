@@ -23,6 +23,25 @@ public partial class Preferences : Form
 				settings.RefreshIntervalSeconds,
 				(int)nudRefreshInterval.Minimum,
 				(int)nudRefreshInterval.Maximum);
+
+		chkLowBatteryNotifications.Checked =
+			settings.LowBatteryNotificationsEnabled;
+
+		nudLowBatteryThreshold.Value =
+			Math.Clamp(
+				settings.LowBatteryThresholdPercent,
+				(int)nudLowBatteryThreshold.Minimum,
+				(int)nudLowBatteryThreshold.Maximum);
+
+		nudLowBatteryThreshold.Enabled =
+			chkLowBatteryNotifications.Checked;
+
+		chkLowBatteryNotifications.CheckedChanged +=
+			(_, _) =>
+			{
+				nudLowBatteryThreshold.Enabled =
+					chkLowBatteryNotifications.Checked;
+			};
 	}
 
 	public AppSettings CreateSettingsCopy(
@@ -39,6 +58,12 @@ public partial class Preferences : Form
 
 			RefreshIntervalSeconds =
 				(int)nudRefreshInterval.Value,
+
+			LowBatteryNotificationsEnabled =
+				chkLowBatteryNotifications.Checked,
+
+			LowBatteryThresholdPercent =
+				(int)nudLowBatteryThreshold.Value,
 
 			HasSavedWindowBounds =
 				existing.HasSavedWindowBounds,
